@@ -32,7 +32,7 @@ def embed_pdf():
 
     loader = PyPDFLoader(file_url)
     docs = loader.load_and_split()
-    embeddings = CohereEmbeddings(model="gpt-3.5-turbo", cohere_api_key=cohere_api_key)
+    embeddings = CohereEmbeddings(model="text-davinci-003", cohere_api_key=cohere_api_key)
     qdrant = Qdrant.from_documents(docs, embeddings, url=qdrant_url, collection_name=collection_name, prefer_grpc=True, api_key=qdrant_api_key)
     
     return {"collection_name":qdrant.collection_name}
@@ -49,7 +49,7 @@ def retrieve_info():
 
     client = QdrantClient(url=qdrant_url, prefer_grpc=True, api_key=qdrant_api_key)
 
-    embeddings = CohereEmbeddings(model="gpt-3.5-turbo", cohere_api_key=cohere_api_key)
+    embeddings = CohereEmbeddings(model="text-davinci-003", cohere_api_key=cohere_api_key)
     qdrant = Qdrant(client=client, collection_name=collection_name, embedding_function=embeddings.embed_query)
     search_results = qdrant.similarity_search(query, k=2)
     chain = load_qa_chain(OpenAI(openai_api_key=openai_api_key,temperature=0.2), chain_type="stuff")
